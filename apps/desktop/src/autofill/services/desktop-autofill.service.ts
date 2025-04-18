@@ -250,6 +250,8 @@ export class DesktopAutofillService implements OnDestroy {
           callback(error, null);
         });
     });
+
+    ipc.autofill.startServer();
   }
 
   private convertRegistrationRequest(

@@ -34,48 +34,55 @@ export class NativeAutofillMain {
       },
     );
 
-    this.ipcServer = await autofill.IpcServer.listen(
-      "autofill",
-      // RegistrationCallback
-      (error, clientId, sequenceNumber, request) => {
-        if (error) {
-          this.logService.error("autofill.IpcServer.registration", error);
-          this.ipcServer.completeError(clientId, sequenceNumber, String(error));
-          return;
-        }
-        this.windowMain.win.webContents.send("autofill.passkeyRegistration", {
-          clientId,
-          sequenceNumber,
-          request,
-        });
-      },
-      // AssertionCallback
-      (error, clientId, sequenceNumber, request) => {
-        if (error) {
-          this.logService.error("autofill.IpcServer.assertion", error);
-          this.ipcServer.completeError(clientId, sequenceNumber, String(error));
-          return;
-        }
-        this.windowMain.win.webContents.send("autofill.passkeyAssertion", {
-          clientId,
-          sequenceNumber,
-          request,
-        });
-      },
-      // AssertionWithoutUserInterfaceCallback
-      (error, clientId, sequenceNumber, request) => {
-        if (error) {
-          this.logService.error("autofill.IpcServer.assertion", error);
-          this.ipcServer.completeError(clientId, sequenceNumber, String(error));
-          return;
-        }
-        this.windowMain.win.webContents.send("autofill.passkeyAssertionWithoutUserInterface", {
-          clientId,
-          sequenceNumber,
-          request,
-        });
-      },
-    );
+    ipcMain.on("autofill.startServer", async () => {
+      if (this.ipcServer != null) {
+        this.logService.warning("autofill.startServer", "IPC server already started");
+        return;
+      }
+
+      this.ipcServer = await autofill.IpcServer.listen(
+        "autofill",
+        // RegistrationCallback
+        (error, clientId, sequenceNumber, request) => {
+          if (error) {
+            this.logService.error("autofill.IpcServer.registration", error);
+            this.ipcServer.completeError(clientId, sequenceNumber, String(error));
+            return;
+          }
+          this.windowMain.win.webContents.send("autofill.passkeyRegistration", {
+            clientId,
+            sequenceNumber,
+            request,
+          });
+        },
+        // AssertionCallback
+        (error, clientId, sequenceNumber, request) => {
+          if (error) {
+            this.logService.error("autofill.IpcServer.assertion", error);
+            this.ipcServer.completeError(clientId, sequenceNumber, String(error));
+            return;
+          }
+          this.windowMain.win.webContents.send("autofill.passkeyAssertion", {
+            clientId,
+            sequenceNumber,
+            request,
+          });
+        },
+        // AssertionWithoutUserInterfaceCallback
+        (error, clientId, sequenceNumber, request) => {
+          if (error) {
+            this.logService.error("autofill.IpcServer.assertion", error);
+            this.ipcServer.completeError(clientId, sequenceNumber, String(error));
+            return;
+          }
+          this.windowMain.win.webContents.send("autofill.passkeyAssertionWithoutUserInterface", {
+            clientId,
+            sequenceNumber,
+            request,
+          });
+        },
+      );
+    });
 
     ipcMain.on("autofill.completePasskeyRegistration", (event, data) => {
       this.logService.warning("autofill.completePasskeyRegistration", data);
