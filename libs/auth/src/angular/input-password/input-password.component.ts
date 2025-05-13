@@ -105,11 +105,11 @@ interface InputPasswordForm {
     FormFieldModule,
     IconButtonModule,
     InputModule,
-    ReactiveFormsModule,
-    SharedModule,
+    JslibModule,
     PasswordCalloutComponent,
     PasswordStrengthV2Component,
-    JslibModule,
+    ReactiveFormsModule,
+    SharedModule,
   ],
 })
 export class InputPasswordComponent implements OnInit {
@@ -146,11 +146,6 @@ export class InputPasswordComponent implements OnInit {
         Validators.minLength(this.minPasswordLength),
       ]),
       newPasswordConfirm: this.formBuilder.nonNullable.control("", Validators.required),
-      newPasswordHint: this.formBuilder.nonNullable.control("", [
-        Validators.minLength(this.minHintLength),
-        Validators.maxLength(this.maxHintLength),
-      ]),
-      checkForBreaches: this.formBuilder.nonNullable.control(true),
     },
     {
       validators: [
@@ -198,12 +193,11 @@ export class InputPasswordComponent implements OnInit {
     if (this.flow !== InputPasswordFlow.ChangePasswordDelegation) {
       this.formGroup.addControl(
         "newPasswordHint",
-        new FormControl("", [
+        this.formBuilder.nonNullable.control("", [
           Validators.minLength(this.minHintLength),
           Validators.maxLength(this.maxHintLength),
-        ]) as FormControl<string>,
+        ]),
       );
-      this.formGroup.addControl("checkForBreaches", new FormControl(true) as FormControl<boolean>);
 
       this.formGroup.addValidators([
         compareInputs(
@@ -213,6 +207,8 @@ export class InputPasswordComponent implements OnInit {
           this.i18nService.t("hintEqualsPassword"),
         ),
       ]);
+
+      this.formGroup.addControl("checkForBreaches", this.formBuilder.nonNullable.control(true));
     }
 
     if (
