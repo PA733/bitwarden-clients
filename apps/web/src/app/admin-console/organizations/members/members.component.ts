@@ -46,7 +46,9 @@ import { AccountService } from "@bitwarden/common/auth/abstractions/account.serv
 import { getUserId } from "@bitwarden/common/auth/services/account.service";
 import { BillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/billing-api.service.abstraction";
 import { isNotSelfUpgradable, ProductTierType } from "@bitwarden/common/billing/enums";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
 import { EncryptService } from "@bitwarden/common/key-management/crypto/abstractions/encrypt.service";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/platform/abstractions/log.service";
 import { ValidationService } from "@bitwarden/common/platform/abstractions/validation.service";
@@ -66,7 +68,7 @@ import { openEntityEventsDialog } from "../manage/entity-events.component";
 
 import {
   AccountRecoveryDialogComponent,
-  AccountRecoveryDialogResult,
+  AccountRecoveryDialogResultTypes,
 } from "./components/account-recovery/account-recovery-dialog.component";
 import { BulkConfirmDialogComponent } from "./components/bulk/bulk-confirm-dialog.component";
 import { BulkDeleteDialogComponent } from "./components/bulk/bulk-delete-dialog.component";
@@ -138,6 +140,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
     private collectionService: CollectionService,
     private billingApiService: BillingApiServiceAbstraction,
     protected deleteManagedMemberWarningService: DeleteManagedMemberWarningService,
+    private configService: ConfigService,
   ) {
     super(
       apiService,
@@ -738,7 +741,7 @@ export class MembersComponent extends BaseMembersComponent<OrganizationUserView>
       });
 
       const result = await lastValueFrom(dialogRef.closed);
-      if (result === AccountRecoveryDialogResult.Ok) {
+      if (result === AccountRecoveryDialogResultTypes.Ok) {
         await this.load();
       }
     } else {
