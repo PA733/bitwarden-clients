@@ -1,14 +1,15 @@
-import { css } from "@emotion/css";
+import { css, keyframes } from "@emotion/css";
 import { html } from "lit";
 
 import { IconProps } from "../common-types";
-import { buildIconColorRule, ruleNames, themes } from "../constants/styles";
+import { buildIconColorRule, ruleNames, themes, animations } from "../constants/styles";
 
-export function Spinner({ ariaHidden = true, color, disabled, theme }: IconProps) {
+export function Spinner({ ariaHidden = true, color, disabled, theme, disableSpin = false }: IconProps & {disableSpin: boolean;}) {
   const shapeColor = disabled ? themes[theme].secondary["300"] : color || themes[theme].text.main;
 
   return html`
     <svg
+      class=${disableSpin ? '' : animation}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 16 16"
       fill="none"
@@ -21,3 +22,7 @@ export function Spinner({ ariaHidden = true, color, disabled, theme }: IconProps
     </svg>
   `;
 }
+
+const animation = css`
+  animation: ${keyframes(animations.spin)} 2s infinite linear;
+`;
