@@ -58,4 +58,5 @@ export const FolderIcon = createIconStory("Folder");
 export const GlobeIcon = createIconStory("Globe");
 export const PencilSquareIcon = createIconStory("PencilSquare");
 export const ShieldIcon = createIconStory("Shield");
+export const SpinnerIcon = createIconStory("Spinner");
 export const UserIcon = createIconStory("User");
